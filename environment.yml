@@ -10,7 +10,7 @@ dependencies:
         - samtools=1.11
         - bcftools=1.11
         - trim-galore=0.6.6
+        - r-base=4.0.3
 
 # Additional dependencies not installed using conda
-# Tanoti v1.2
-# Rv4.0
+# Tanoti v1.2 (https://bioinformatics.cvr.ac.uk/software/tanoti/)

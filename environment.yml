@@ -1,12 +1,4 @@
 name: HCV
 
 dependencies:
-        - tanoti=1.2
-        - weeSAM=1.4
-        - samtools=
-        - trim_galore=
-        - bcftools=
-        - bedtool=
-        - seqkit=
-        - R=
-
+        - bedtools=2.29.2

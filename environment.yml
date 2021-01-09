@@ -1,4 +1,16 @@
 name: HCV
 
+channels:
+        - defaults
+        - bioconda
+        - conda-forge
+
 dependencies:
         - bedtools=2.29.2
+        - samtools=1.11
+        - bcftools=1.11
+        - trim-galore=0.6.6
+
+# Additional dependencies not installed using conda
+# Tanoti v1.2
+# Rv4.0

@@ -11,6 +11,8 @@ dependencies:
         - bcftools=1.11
         - trim-galore=0.6.6
         - r-base=4.0.3
+        - pysam=0.16.0
 
 # Additional dependencies not installed using conda
 # Tanoti v1.2 (https://bioinformatics.cvr.ac.uk/software/tanoti/)
+# weeSAM v1.5 (https://bioinformatics.cvr.ac.uk/weesam-version-1-5/)

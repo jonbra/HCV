@@ -10,4 +10,4 @@ To activate the conda environment type: "conda activate HCV"
 Software dependencies described in the file "environment.yml".
 
 ## Test data
-Fastq sequence data obtained from the study: PMID:32847527, BioProject:PRJNA545854 
+Fastq sequence data for testing: Virus2010002 

@@ -98,7 +98,7 @@ do
     newR4=$(ls *_tanoti.sam)
     samtools view -bS ${newR4} | samtools sort -o ${newR4%.sam}_sorted.bam
     samtools index ${newR4%.sam}_sorted.bam
-    weeSAMv1.4 -b ${newR4%.sam}_sorted.bam -out ${newR4%.sam}_stats.txt 
+    weeSAMv1.4 --bam ${newR4%.sam}_sorted.bam --out ${newR4%.sam}_stats.txt 
     Rscript --vanilla ${scriptdir}Rscript_sumreads.R "${newR4%.sam}_stats.txt" "${newR4%.sam}_sumstats.txt" # Beregner også prosent av totalt antall agens read
 	
 	sort -t$'\t' -k3 -nr ${newR4%.sam}_stats.txt > ${newR4%.sam}_stats_sorted.txt #Ikke nødvendig, men gjør det lettere å gå tilbake å se på resultatene fra første mapping	

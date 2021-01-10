@@ -11,9 +11,9 @@ dependencies:
         - bcftools=1.11
         - trim-galore=0.6.6
         - r-base=4.0.3
-        - pysam=0.16.0
-        - matplotlib=3.3.3
-        - seaborn=0.11.1
+        - pysam=0.16.0 # weeSAM dependency
+        - matplotlib=3.3.3 # weeSAM dependency
+        - seaborn=0.11.1 # weeSAM dependency
         - seqkit=0.14.0
 
 # Additional dependencies not installed using conda

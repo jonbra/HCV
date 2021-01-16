@@ -98,7 +98,7 @@ do
     newR4=$(ls *_tanoti.sam)
     samtools view -bS ${newR4} | samtools sort -o ${newR4%.sam}_sorted.bam
     samtools index ${newR4%.sam}_sorted.bam
-    weeSAMv1.4 --bam ${newR4%.sam}_sorted.bam --out ${newR4%.sam}_stats.txt 
+    weeSAM --bam ${newR4%.sam}_sorted.bam --out ${newR4%.sam}_stats.txt 
     Rscript --vanilla ${scriptdir}Rscript_sumreads.R "${newR4%.sam}_stats.txt" "${newR4%.sam}_sumstats.txt" # Beregner også prosent av totalt antall agens read
 	
 	sort -t$'\t' -k3 -nr ${newR4%.sam}_stats.txt > ${newR4%.sam}_stats_sorted.txt #Ikke nødvendig, men gjør det lettere å gå tilbake å se på resultatene fra første mapping	
@@ -287,10 +287,10 @@ do
 	
 # Coverage plot og statistikkmed duplikater
 	bestF3=$(ls *_tanoti_vbest.sam)
-	weeSAMv1.4 -b ${bestF3%.sam}_sorted.bam -out ${bestF3%.sam}_stats.txt -plot ${bestF3%.sam}.pdf
+	weeSAM --bam ${bestF3%.sam}_sorted.bam --out ${bestF3%.sam}_stats.txt -plot ${bestF3%.sam}.pdf
 
 # Coverage plot og statistikk uten duplikater	
-	weeSAMv1.4 -b ${bestF3%.sam}_sorted.marked.bam -out ${bestF3%.sam}.marked_stats.txt -plot ${bestF3%.sam}_marked.pdf
+	weeSAM --bam ${bestF3%.sam}_sorted.marked.bam --out ${bestF3%.sam}.marked_stats.txt -plot ${bestF3%.sam}_marked.pdf
 	
 	
     sumAgensRead=$(awk 'FNR > 1 {print $2}' *sumstats.txt| paste -sd+ | bc)
@@ -304,10 +304,10 @@ do
 	
 # Coverage plot og statistikk med duplikater for minor
 		bestMinor3=$(ls *_tanoti_bestMinor.sam)
-		weeSAMv1.4 -b ${bestMinor3%.sam}_sorted.bam -out ${bestMinor3%.sam}_stats.txt -plot ${bestMinor3%.sam}.pdf
+		weeSAM --bam ${bestMinor3%.sam}_sorted.bam --out ${bestMinor3%.sam}_stats.txt -plot ${bestMinor3%.sam}.pdf
 
 # Coverage plot og statistikk uten duplikater	for minor		
-		weeSAMv1.4 -b ${bestMinor3%.sam}_sorted.marked.bam -out ${bestMinor3%.sam}.marked_stats.txt -plot ${bestMinor3%.sam}_marked.pdf
+		weeSAM --bam ${bestMinor3%.sam}_sorted.marked.bam --out ${bestMinor3%.sam}.marked_stats.txt -plot ${bestMinor3%.sam}_marked.pdf
 		
     fi
 

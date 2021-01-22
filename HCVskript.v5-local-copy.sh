@@ -18,24 +18,25 @@
 ## Skript startes fra run-mappen (f.eks. Run443)
 
 basedir=$(pwd)
-runname=${basedir##*/}
+#runname=${basedir##*/}
+runname=local-test
 
 #husk å legge inn Rscript_sumreads.R
-scriptdir=/home/ngs2/.fhiscripts/
+scriptdir=/home/jonbra/FHI/Prosjekter/HCV/
 #tanotidir=/home/ngs2/Downloads/Tanoti-1.2-Linux/
 #weesamdir=/home/ngs2/.fhiscripts/weeSAM/
 script_name1=`basename $0`
 #skille software fra rapportering
-VirusScriptDir=/home/ngs2/.fhiscripts/VirusScriptParts/
+#VirusScriptDir=/home/ngs2/.fhiscripts/VirusScriptParts/
 
 
 ###### DATABASER/REFERANSESEKVENSER ########
-HCV_RefDir=/media/data/Referanser_HCV_ICTV_190508_clean
-HEV_RefDir=/media/data/Referanser_HEV
-Corona_RefDir=/media/data/Referanser_Corona
-Dengue_RefDir=/media/data/Referanser_Dengue
-Entero_RefDir=/media/data/Referanser_Entero
-TBEV_RefDir=/media/data/Referanser_TBEV
+HCV_RefDir=/home/jonbra/FHI/FHI-databaser_og_scripts/Referanser_HCV_ICTV_190508_clean
+#HEV_RefDir=/media/data/Referanser_HEV
+#Corona_RefDir=/media/data/Referanser_Corona
+#Dengue_RefDir=/media/data/Referanser_Dengue
+#Entero_RefDir=/media/data/Referanser_Entero
+#TBEV_RefDir=/media/data/Referanser_TBEV
 
 ########## FYLL INN FOR AGENS ###################
 # kan også legge til trimming-setinger her om man ønsker muligheten for at det skal være ulikt (phred-score og minimum lengde på read) 
@@ -60,9 +61,11 @@ minAgensRead=50000			#ingen mellomrom etter =
 ######## DEL 1 Trimming #### START ######
 
 basedir=$(pwd)
-runname=${basedir##*/}
+#runname=${basedir##*/}
+runname=local-test
 
-for dir in $(ls -d Virus*/)
+#for dir in $(ls -d Virus*/)
+for dir in $(ls -d Data/)
 do
     cd ${dir}
     R1=$(ls *_R1*.fastq.gz)
@@ -84,9 +87,11 @@ echo "###################"
 
 ######## DEL 2 Mapping #### START ######
 basedir=$(pwd)
-runname=${basedir##*/}
+#runname=${basedir##*/}
+runname=local-test
 
-for dir in $(ls -d Virus*/)
+#for dir in $(ls -d Virus*/)
+for dir in $(ls -d Data/)
 do
     cd ${dir}
 	R1=$(ls *_R1*.fastq.gz)
@@ -128,9 +133,11 @@ echo "Mapping done!"
 ######## DEL 2b Mapping mot minority #### START ######
 
 basedir=$(pwd)
-runname=${basedir##*/}
+#runname=${basedir##*/}
+runname=local-test
 
-for dir in $(ls -d Virus*/)
+#for dir in $(ls -d Virus*/)
+for dir in $(ls -d Data/)
 do
     cd ${dir}
 	R1=$(ls *_R1*.fastq.gz)
@@ -178,9 +185,10 @@ echo "Mapping against minority done!"
 ######## DEL 3 VariantCalling og Consensus #### START ######
 
 basedir=$(pwd)
-runname=${basedir##*/}
-
-for dir in $(ls -d Virus*/)
+#runname=${basedir##*/}
+runname=local-test
+#for dir in $(ls -d Virus*/)
+for dir in $(ls -d Data/)
 do
 
 cd ${dir}
@@ -196,8 +204,8 @@ cd ${dir}
 	samtools sort ${bestF3%.sam}_sorted.fix.bam > ${bestF3%.sam}_sorted.fix_sorted.bam
 
 	samtools markdup -r ${bestF3%.sam}_sorted.fix_sorted.bam ${bestF3%.sam}_sorted.marked.bam
-	bcftools mpileup -f ${Refdir}/${bestF1}.fa ${bestF3%.sam}_sorted.marked.bam| bcftools call -mv -Ob -o calls.vcf.gz
-	bcftools index calls.vcf.gz
+	bcftools mpileup -Ou -f ${Refdir}/${bestF1}.fa ${bestF3%.sam}_sorted.marked.bam| bcftools call -mv -Ob -o calls.bcf.gz
+	bcftools index calls.bcf.gz
 
 #	bedtools genomecov -bga -ibam ${bestF3%.sam}_sorted.marked.bam| grep -w '0$' > regionswith0coverage.bed   # '0$\|1$\|2$\|3$\|4$\|5$' > regionswithlessthan6coverage
 #	bcftools consensus -m regionswith0coverage.bed -f ${Refdir}${bestF1}.fa calls.vcf.gz -o cons.fa
@@ -205,14 +213,14 @@ cd ${dir}
     samtools index ${bestF3%.sam}_sorted.marked.bam
 
     bedtools genomecov -bga -ibam ${bestF3%.sam}_sorted.marked.bam| grep -w '0$\|1$\|2$\|3$\|4$\|5$' > regionswithlessthan6coverage.bed   
-	bcftools consensus -m regionswithlessthan6coverage.bed -f ${Refdir}/${bestF1}.fa calls.vcf.gz -o cons.fa
+	bcftools consensus -m regionswithlessthan6coverage.bed -f ${Refdir}/${bestF1}.fa calls.bcf.gz -o cons.fa
 
 	seqkit replace -p "(.+)" -r ${bestF3%%_*} cons.fa > ${bestF3%%_*}_consensus.fa #endrer navn fra referanse-navn til prøvenavn inne i fasta-fil
 	
 #sletter filer som ikke trengs videre: 
 	rm *cons.fa 
-	rm *calls*.vcf.gz
-	rm *calls*.vcf.gz.csi 
+	rm *calls*.bcf.gz
+	rm *calls*.bcf.gz.csi 
 	rm *regionswith*coverage.bed 
 	rm *_sorted.byQuery.bam 
 	rm *_sorted.fix.bam
@@ -239,8 +247,8 @@ cd ${dir}
 		samtools sort ${bestMinor3%.sam}_sorted.fix.bam > ${bestMinor3%.sam}_sorted.fix_sorted.bam
 
 		samtools markdup -r ${bestMinor3%.sam}_sorted.fix_sorted.bam ${bestMinor3%.sam}_sorted.marked.bam
-		bcftools mpileup -f ${Refdir}/${bestMinor}.fa ${bestMinor3%.sam}_sorted.marked.bam| bcftools call -mv -Ob -o calls.vcf.gz
-		bcftools index calls.vcf.gz
+		bcftools mpileup -Ou -f ${Refdir}/${bestMinor}.fa ${bestMinor3%.sam}_sorted.marked.bam| bcftools call -mv -Ob -o calls.bcf.gz
+		bcftools index calls.bcf.gz
 
 		#bedtools genomecov -bga -ibam ${bestMinor3%.sam}_sorted.marked.bam| grep -w '0$' > regionswith0coverage.bed   # '0$\|1$\|2$\|3$\|4$\|5$' > regionswithlessthan6coverage
 		#bcftools consensus -m regionswith0coverage.bed -f ${Refdir}${bestMinor}.fa calls.vcf.gz -o cons.fa
@@ -248,7 +256,7 @@ cd ${dir}
         samtools index ${bestMinor3%.sam}_sorted.marked.bam
 
         bedtools genomecov -bga -ibam ${bestMinor3%.sam}_sorted.marked.bam| grep -w '0$\|1$\|2$\|3$\|4$\|5$' > regionswithlessthan6coverage.bed   
-		bcftools consensus -m regionswithlessthan6coverage.bed -f ${Refdir}/${bestMinor}.fa calls.vcf.gz -o cons.fa
+		bcftools consensus -m regionswithlessthan6coverage.bed -f ${Refdir}/${bestMinor}.fa calls.bcf.gz -o cons.fa
    
 
 		seqkit replace -p "(.+)" -r ${bestMinor3%%_*}_Minor cons.fa > ${bestMinor3%%_*}_Minor_consensus.fa #endrer navn fra referanse-navn til prøvenavn inne i fasta-fil
@@ -256,8 +264,8 @@ cd ${dir}
 		
 		#sletter filer som ikke trengs videre: 
 		rm *cons.fa 
-		rm *calls*.vcf.gz
-		rm *calls*.vcf.gz.csi 
+		rm *calls*.bcf.gz
+		rm *calls*.bcf.gz.csi 
 		rm *regionswith*coverage.bed 
 		rm *_sorted.byQuery.bam 
 		rm *_sorted.fix.bam

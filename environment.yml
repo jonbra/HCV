@@ -15,6 +15,7 @@ dependencies:
         - matplotlib=3.3.3 # weeSAM dependency
         - seaborn=0.11.1 # weeSAM dependency
         - seqkit=0.14.0
+        - bowtie2=2.4.2
 
 # Additional dependencies not installed using conda
 # Tanoti v1.2 (https://bioinformatics.cvr.ac.uk/software/tanoti/)
